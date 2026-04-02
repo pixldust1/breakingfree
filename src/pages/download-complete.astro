@@ -133,7 +133,7 @@ const items = [
         await fetch("/api/purchase-confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, firstName, lastName, package: "complete", payerID })
+          body: JSON.stringify({ email, firstName, lastName, package: "complete", payerID: new URLSearchParams(window.location.search).get("PayerID") || "" })
         });
       } catch(e) {}
       document.getElementById("capture-form").style.display = "none";
