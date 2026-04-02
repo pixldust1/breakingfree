@@ -1,6 +1,7 @@
 ---
 // src/pages/download-essentials.astro
-// This page is linked from PayPal as the return URL after $97 purchase
+export const prerender = false;
+const payerID = Astro.url.searchParams.get("PayerID") || "";
 const items = [
   "Book 01 — Breaking Free: System Overview",
   "Book 03 — Owner Execution System",
@@ -13,73 +14,137 @@ const items = [
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Download — Owner's Execution System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
-    .wrap { max-width: 560px; width: 100%; text-align: center; }
-    .badge { display: inline-block; background: #dcfce7; color: #16a34a; font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 99px; margin-bottom: 1.5rem; }
-    h1 { font-size: 26px; font-weight: 700; line-height: 1.3; margin-bottom: 0.75rem; }
-    .sub { font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 2rem; }
-    .card { background: #fff; border-radius: 14px; border: 1px solid #e5e5e5; padding: 2rem 1.5rem; margin-bottom: 1.5rem; }
-    .icon-wrap { width: 54px; height: 54px; background: #eff6ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
-    .product-name { font-size: 17px; font-weight: 700; margin-bottom: 0.3rem; }
-    .product-detail { font-size: 14px; color: #888; margin-bottom: 1.5rem; }
-    .includes { background: #f9f9f7; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; text-align: left; }
-    .includes-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #999; margin-bottom: 0.6rem; }
-    .item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #333; padding: 5px 0; line-height: 1.4; }
-    .check { width: 18px; height: 18px; background: #dcfce7; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-    .download-btn { display: block; width: 100%; background: #1a1a2e; color: #fff; text-decoration: none; border-radius: 10px; padding: 1rem; font-size: 16px; font-weight: 600; text-align: center; margin-bottom: 0.75rem; }
-    .download-btn:hover { background: #111122; }
-    .note { font-size: 13px; color: #aaa; }
-    .footer { font-size: 13px; color: #aaa; border-top: 1px solid #eee; padding-top: 1.5rem; margin-top: 0.5rem; }
-    .footer a { color: #3b82f6; text-decoration: none; }
+    body { background: #0a0a0f; min-height: 100vh; padding: 3rem 1rem; font-family: 'Inter', sans-serif; color: #ccc; }
+    .lx-wrap { max-width: 580px; margin: 0 auto; text-align: center; }
+    .lx-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,165,0,0.1); border: 1px solid rgba(255,165,0,0.3); color: #ffa500; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 18px; border-radius: 99px; margin-bottom: 2rem; }
+    .lx-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #ffa500; }
+    .lx-eyebrow { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #aaa; margin-bottom: 0.5rem; }
+    .lx-title { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .lx-title span { color: #ffa500; }
+    .lx-sub { font-size: 15px; color: #aaa; line-height: 1.7; font-weight: 300; margin-bottom: 2.5rem; }
+    .lx-divider { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .lx-divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(255,165,0,0.3), transparent); }
+    .lx-divider-text { font-size: 11px; color: #888; letter-spacing: 0.15em; text-transform: uppercase; }
+    .lx-card { background: #111118; border: 1px solid rgba(255,165,0,0.2); border-radius: 16px; padding: 2rem 1.75rem; margin-bottom: 1.5rem; }
+    .lx-product { font-family: 'Cinzel', serif; font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 0.3rem; }
+    .lx-detail { font-size: 13px; color: #888; margin-bottom: 1.75rem; letter-spacing: 0.05em; }
+    .lx-items { text-align: left; margin-bottom: 1.75rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.25rem; }
+    .lx-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #ccc; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-weight: 300; }
+    .lx-item:last-child { border-bottom: none; }
+    .lx-check { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* EMAIL CAPTURE FORM */
+    .capture-form { margin-bottom: 1.5rem; }
+    .capture-label { font-size: 13px; color: #aaa; margin-bottom: 1rem; display: block; line-height: 1.6; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .form-input { width: 100%; background: #0a0a0f; border: 1px solid rgba(255,165,0,0.25); border-radius: 8px; padding: 0.75rem 1rem; font-size: 14px; color: #fff; font-family: 'Inter', sans-serif; outline: none; }
+    .form-input::placeholder { color: #444; }
+    .form-input:focus { border-color: rgba(255,165,0,0.5); }
+    .lx-btn { display: block; width: 100%; background: linear-gradient(135deg, #c87800, #ffa500, #c87800); color: #000; text-decoration: none; border-radius: 10px; padding: 1.1rem; font-size: 15px; font-weight: 700; text-align: center; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Inter', sans-serif; border: none; cursor: pointer; margin-bottom: 1rem; }
+    .lx-btn:hover { opacity: 0.9; }
+    .lx-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .lx-note { font-size: 12px; color: #888; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+
+    /* DOWNLOAD SECTION (hidden until email submitted) */
+    #download-section { display: none; }
+    .lx-password { background: rgba(255,165,0,0.06); border: 1px solid rgba(255,165,0,0.2); border-radius: 10px; padding: 1rem 1.25rem; text-align: left; margin-bottom: 1rem; }
+    .lx-pw-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #ffa500; margin-bottom: 0.5rem; }
+    .lx-pw-text { font-size: 13px; color: #aaa; line-height: 1.7; font-weight: 300; }
+    .lx-pw-text strong { color: #ffa500; font-weight: 600; }
+    .lx-pw-perms { display: flex; gap: 1.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .lx-perm { font-size: 12px; color: #999; }
+    .lx-perm-label { color: #ffa500; font-weight: 600; }
+    .success-msg { background: rgba(255,165,0,0.08); border: 1px solid rgba(255,165,0,0.2); border-radius: 10px; padding: 0.75rem 1rem; font-size: 13px; color: #ffa500; margin-bottom: 1rem; display: none; }
+    .lx-footer { font-size: 12px; color: #777; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem; margin-top: 1rem; letter-spacing: 0.05em; }
+    .lx-footer a { color: #999; text-decoration: none; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="badge">Payment confirmed</div>
-    <h1>Your Owner's Execution System is ready</h1>
-    <p class="sub">Thank you for your purchase. Click below to download your files immediately.</p>
+  <div class="lx-wrap">
+    <div class="lx-badge"><div class="lx-badge-dot"></div>Payment Confirmed</div>
+    <p class="lx-eyebrow">The Platform Independence Blueprint</p>
+    <h1 class="lx-title">BREAKING <span>FREE</span></h1>
+    <p class="lx-sub">Your system is ready. Enter your details below to receive your confirmation email and access your download.</p>
 
-    <div class="card">
-      <div class="icon-wrap">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-          <polyline points="7 10 12 15 17 10"/>
-          <line x1="12" y1="15" x2="12" y2="3"/>
-        </svg>
-      </div>
-      <p class="product-name">Owner's Execution System — No Coding Required</p>
-      <p class="product-detail">3 files &middot; ZIP archive &middot; Instant download</p>
+    <div class="lx-divider">
+      <div class="lx-divider-line"></div>
+      <span class="lx-divider-text">Your Download</span>
+      <div class="lx-divider-line"></div>
+    </div>
 
-      <div class="includes">
-        <p class="includes-label">What's included in your download</p>
+    <div class="lx-card">
+      <p class="lx-product">Owner's Execution System</p>
+      <p class="lx-detail">No Coding Required &nbsp;&middot;&nbsp; 3 files &nbsp;&middot;&nbsp; ZIP Archive</p>
+
+      <div class="lx-items">
         {items.map((item) => (
-          <div class="item">
-            <div class="check">
-              <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#16a34a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+          <div class="lx-item">
+            <div class="lx-check">
+              <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
             </div>
             {item}
           </div>
         ))}
       </div>
 
-      <!-- EDIT: Replace href with your actual ZIP path in /public/downloads/ -->
-      <a class="download-btn" href="/downloads/Owners-Execution-System-v1.zip" download>
-        Download your system
-      </a>
-      <p class="note">File downloads automatically — save it somewhere safe.</p>
+      <!-- EMAIL CAPTURE -->
+      <div class="capture-form" id="capture-form">
+        <span class="capture-label">Enter your name and email to receive your confirmation email and unlock your download.</span>
+        <div class="form-row">
+          <input class="form-input" type="text" id="firstName" placeholder="First name" />
+          <input class="form-input" type="text" id="lastName" placeholder="Last name" />
+        </div>
+        <input class="form-input" type="email" id="email" placeholder="Your email address" style="margin-bottom: 1rem;" />
+        <button class="lx-btn" id="submit-btn" onclick="handleSubmit()">Send Confirmation & Download</button>
+        <p class="lx-note">Your email is used to send your receipt and download link. No spam — ever.</p>
+      </div>
 
-      <div style="margin-top: 1.25rem; background: #fefce8; border: 1px solid #fde68a; border-radius: 10px; padding: 1rem 1.25rem; text-align: left;">
-        <p style="font-size: 13px; font-weight: 600; color: #92400e; margin-bottom: 0.3rem;">PDF Password Required</p>
-        <p style="font-size: 14px; color: #78350f; line-height: 1.6;">Your PDF files are password protected. When prompted enter: <strong>FREEDOM</strong><br/>Save this somewhere safe — you will need it each time you open the files.</p>
-        <p style="font-size: 13px; color: #92400e; margin-top: 0.75rem; line-height: 1.6;"><strong>What you can do:</strong> Print freely for personal use &nbsp;&cdot;&nbsp; Read on any device<br/><strong>What is disabled:</strong> Editing content &nbsp;&cdot;&nbsp; Copying text &nbsp;&cdot;&nbsp; Saving a modified copy</p>
+      <!-- SUCCESS + DOWNLOAD (shown after email submitted) -->
+      <p class="success-msg" id="success-msg">Confirmation email sent to your inbox!</p>
+      <div id="download-section">
+        <a class="lx-btn" href="/downloads/02-Owners-Execution-System-v1.zip" download>Download Your System</a>
+        <p class="lx-note">File downloads automatically — save it somewhere safe</p>
+        <div class="lx-password">
+          <p class="lx-pw-title">PDF Access Password</p>
+          <p class="lx-pw-text">When prompted to open any PDF file, enter: <strong>FREEDOM</strong><br/>Keep this password — you will need it each time you open a file.</p>
+          <div class="lx-pw-perms">
+            <span class="lx-perm"><span class="lx-perm-label">Allowed:</span> Print freely · Read on any device</span>
+            <span class="lx-perm"><span class="lx-perm-label">Disabled:</span> Edit · Copy text · Save changes</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="footer">
-      Questions? Email <a href="mailto:steve@oviera.co">steve@oviera.co</a>
+    <div class="lx-footer">
+      Questions? <a href="mailto:steve@oviera.co">steve@oviera.co</a>
     </div>
   </div>
+
+  <script define:vars={{ payerID }}>
+    async function handleSubmit() {
+      const email = document.getElementById("email").value.trim();
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      if (!email) { alert("Please enter your email address."); return; }
+      const btn = document.getElementById("submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+      try {
+        await fetch("/api/purchase-confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, firstName, lastName, package: "essentials", payerID })
+        });
+      } catch(e) {}
+      document.getElementById("capture-form").style.display = "none";
+      document.getElementById("success-msg").style.display = "block";
+      document.getElementById("download-section").style.display = "block";
+    }
+  </script>
 </body>
 </html>
