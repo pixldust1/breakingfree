@@ -1,48 +1,7 @@
 ---
 // src/pages/pricing.astro
-const packages = [
-  {
-    tier: "Essentials",
-    name: "Owner's Execution System",
-    tagline: "No Coding Required",
-    description: "Built for business owners who want results without technical overwhelm.",
-    price: 97,
-    featured: false,
-    items: [
-      { included: true,  label: "Book 01 — Breaking Free: System Overview" },
-      { included: true,  label: "Book 03 — Owner Execution System" },
-      { included: true,  label: "Cost Justification PDF" },
-      { included: false, label: "Book 02 — Technical Migration System" },
-      { included: false, label: "Client Migration Brief PDF" },
-      { included: false, label: "Migration Checklist PDF" },
-    ],
-    // EDIT: Replace with your real PayPal Buy Now link
-    paypalUrl: "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=steve@oviera.co&item_name=Owners+Execution+System&amount=97.00&currency_code=USD&return=https://yourdomain.com/download-essentials",
-    btnLabel: "Get the Essentials — $97",
-    btnStyle: "outline",
-  },
-  {
-    tier: "Full Bundle",
-    name: "Breaking Free System",
-    tagline: "Complete Package",
-    description: "Everything you need to fully execute platform independence from end to end.",
-    price: 179,
-    featured: true,
-    badge: "Most Complete",
-    items: [
-      { included: true, label: "Book 01 — Breaking Free: System Overview" },
-      { included: true, label: "Book 02 — Technical Migration System" },
-      { included: true, label: "Book 03 — Owner Execution System" },
-      { included: true, label: "Cost Justification PDF" },
-      { included: true, label: "Client Migration Brief PDF" },
-      { included: true, label: "Migration Checklist PDF" },
-    ],
-    // EDIT: Replace with your real PayPal Buy Now link
-    paypalUrl: "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=steve@oviera.co&item_name=Breaking+Free+Complete+Package&amount=179.00&currency_code=USD&return=https://yourdomain.com/download-complete",
-    btnLabel: "Get the Complete Package — $179",
-    btnStyle: "solid",
-  },
-];
+const supabaseUrl = "https://dnhovfqrzxutexcrvtfk.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuaG92ZnFyenh1dGV4Y3J2dGZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTI2MTEsImV4cCI6MjA4OTA4ODYxMX0.Et8D5xarqrDreHeXvOwwnwDW5CGrnP3P5gDE6S5zNeo";
 ---
 
 <html lang="en">
@@ -50,82 +9,231 @@ const packages = [
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Breaking Free System — Choose Your Package</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; color: #1a1a1a; min-height: 100vh; padding: 3rem 1rem; }
-    .wrap { max-width: 860px; margin: 0 auto; text-align: center; }
-    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 1rem; }
-    h1 { font-size: 32px; font-weight: 700; line-height: 1.25; margin-bottom: 0.75rem; }
-    .sub { font-size: 17px; color: #555; line-height: 1.6; max-width: 580px; margin: 0 auto 3rem; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
-    @media(max-width: 620px) { .grid { grid-template-columns: 1fr; } }
-    .card { background: #fff; border-radius: 16px; border: 1px solid #e5e5e5; padding: 2rem 1.5rem; text-align: left; position: relative; display: flex; flex-direction: column; }
-    .card.featured { border: 2px solid #1a1a2e; }
-    .badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #fff; font-size: 12px; font-weight: 600; padding: 4px 16px; border-radius: 99px; white-space: nowrap; }
-    .tier-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 0.5rem; }
-    .tier-name { font-size: 20px; font-weight: 700; line-height: 1.25; margin-bottom: 0.2rem; color: #1a1a1a; }
-    .tier-tagline { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 0.4rem; }
-    .tier-desc { font-size: 14px; color: #888; margin-bottom: 1.25rem; line-height: 1.5; }
+    body { background: #0a0a0f; min-height: 100vh; padding: 3rem 1rem; font-family: 'Inter', sans-serif; color: #ccc; }
+    .wrap { max-width: 960px; margin: 0 auto; text-align: center; }
+    .lx-eyebrow { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #bbb; margin-bottom: 0.5rem; }
+    .lx-title { font-family: 'Cinzel', serif; font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .lx-title span { color: #ffa500; }
+    .lx-sub { font-size: 15px; color: #bbb; line-height: 1.7; font-weight: 300; max-width: 560px; margin: 0 auto 3rem; }
+    .lx-divider { display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+    .lx-divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, rgba(255,165,0,0.3), transparent); }
+    .lx-divider-text { font-size: 11px; color: #999; letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap; }
+
+    /* BOOK COVERS */
+    .books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem; }
+    @media(max-width: 680px) { .books-grid { grid-template-columns: 1fr; } }
+    .book-card { background: #111118; border: 1px solid rgba(255,165,0,0.15); border-radius: 14px; overflow: hidden; }
+    .book-covers { display: grid; grid-template-columns: 1fr 1fr; }
+    .book-cover { aspect-ratio: 3/4; overflow: hidden; }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .book-info { padding: 1rem 1.25rem; text-align: left; border-top: 1px solid rgba(255,165,0,0.1); }
+    .book-num { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #ffa500; margin-bottom: 0.3rem; }
+    .book-title { font-family: 'Cinzel', serif; font-size: 13px; color: #fff; margin-bottom: 0.5rem; line-height: 1.3; }
+    .book-inside { font-size: 12px; color: #999; line-height: 1.6; font-weight: 300; }
+    .book-inside ul { list-style: none; padding: 0; }
+    .book-inside li { padding: 2px 0; padding-left: 12px; position: relative; }
+    .book-inside li::before { content: '✓'; position: absolute; left: 0; color: #ffa500; font-size: 10px; }
+
+    /* PRICING CARDS */
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    @media(max-width: 620px) { .pricing-grid { grid-template-columns: 1fr; } }
+    .card { background: #111118; border: 1px solid rgba(255,165,0,0.2); border-radius: 16px; padding: 2rem 1.75rem; text-align: left; display: flex; flex-direction: column; position: relative; }
+    .card.featured { border: 1px solid rgba(255,165,0,0.5); }
+    .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #c87800, #ffa500); color: #000; font-size: 11px; font-weight: 700; padding: 4px 18px; border-radius: 99px; white-space: nowrap; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tier-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #ffa500; margin-bottom: 0.5rem; }
+    .tier-name { font-family: 'Cinzel', serif; font-size: 17px; font-weight: 700; color: #fff; line-height: 1.3; margin-bottom: 0.2rem; }
+    .tier-tagline { font-size: 13px; color: #ffa500; font-weight: 500; margin-bottom: 0.5rem; }
+    .tier-desc { font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 1.25rem; font-weight: 300; }
     .price-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 1.5rem; }
-    .price { font-size: 40px; font-weight: 700; color: #1a1a1a; }
-    .price-note { font-size: 14px; color: #aaa; }
-    .divider { border: none; border-top: 1px solid #f0f0f0; margin-bottom: 1.25rem; }
-    .includes-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; margin-bottom: 0.75rem; }
-    .item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; padding: 5px 0; line-height: 1.4; }
-    .item.included { color: #333; }
-    .item.excluded { color: #ccc; }
-    .icon { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-    .icon.check { background: #dcfce7; }
-    .icon.x { background: #f5f5f5; }
+    .price { font-family: 'Cinzel', serif; font-size: 42px; font-weight: 700; color: #fff; }
+    .price-note { font-size: 13px; color: #888; }
+    .card-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 1.25rem; }
+    .includes-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #777; margin-bottom: 0.75rem; }
+    .item { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-weight: 300; }
+    .item:last-child { border-bottom: none; }
+    .item.included { color: #ccc; }
+    .item.excluded { color: #555; }
+    .check-icon { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .x-icon { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .spacer { flex: 1; }
-    .btn { display: block; width: 100%; text-decoration: none; border-radius: 10px; padding: 1rem; font-size: 16px; font-weight: 600; text-align: center; margin-top: 1.5rem; cursor: pointer; }
-    .btn.solid { background: #1a1a2e; color: #fff; border: none; }
-    .btn.solid:hover { background: #111122; }
-    .btn.outline { background: transparent; color: #1a1a2e; border: 2px solid #1a1a2e; }
-    .btn.outline:hover { background: #f5f5f0; }
-    .guarantee { text-align: center; font-size: 14px; color: #888; margin-top: 1rem; }
+    .btn { display: block; width: 100%; text-decoration: none; border-radius: 10px; padding: 1rem; font-size: 14px; font-weight: 700; text-align: center; margin-top: 1.5rem; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Inter', sans-serif; }
+    .btn.solid { background: linear-gradient(135deg, #c87800, #ffa500, #c87800); color: #000; }
+    .btn.outline { background: transparent; color: #ffa500; border: 1px solid rgba(255,165,0,0.4); }
+    .btn:hover { opacity: 0.9; }
+
+    /* REVIEWS */
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; text-align: left; }
+    .review-card { background: #111118; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.25rem 1.5rem; }
+    .review-stars { color: #ffa500; font-size: 14px; margin-bottom: 0.6rem; letter-spacing: 2px; }
+    .review-text { font-size: 13px; color: #bbb; line-height: 1.7; font-weight: 300; margin-bottom: 0.75rem; font-style: italic; }
+    .review-author { font-size: 12px; color: #777; }
+    .review-author strong { color: #999; font-weight: 500; }
+    .reviews-loading { font-size: 13px; color: #555; padding: 2rem; }
+
+    /* GUARANTEE */
+    .guarantee { font-size: 13px; color: #777; margin-bottom: 1.5rem; }
+    .trust-box { background: #111118; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.5rem 2rem; text-align: left; max-width: 640px; margin: 0 auto; }
+    .trust-title { font-family: 'Cinzel', serif; font-size: 14px; color: #ffa500; margin-bottom: 0.6rem; }
+    .trust-text { font-size: 13px; color: #aaa; line-height: 1.8; font-weight: 300; }
+    .trust-text a { color: #bbb; text-decoration: none; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <p class="eyebrow">Choose your package</p>
-    <h1>Breaking Free System</h1>
-    <p class="sub">Platform independence for business owners — no coding required.</p>
+    <p class="lx-eyebrow">The Platform Independence Blueprint</p>
+    <h1 class="lx-title">BREAKING <span>FREE</span></h1>
+    <p class="lx-sub">Own your website. Eliminate platform dependency. Built for business owners — no coding required.</p>
 
-    <div class="grid">
-      {packages.map((pkg) => (
-        <div class={`card ${pkg.featured ? "featured" : ""}`}>
-          {pkg.badge && <div class="badge">{pkg.badge}</div>}
-          <p class="tier-label">{pkg.tier}</p>
-          <p class="tier-name">{pkg.name}</p>
-          <p class="tier-tagline">{pkg.tagline}</p>
-          <p class="tier-desc">{pkg.description}</p>
-          <div class="price-row">
-            <span class="price">${pkg.price}</span>
-            <span class="price-note">one-time</span>
-          </div>
-          <hr class="divider" />
-          <p class="includes-label">What's included</p>
-          {pkg.items.map((item) => (
-            <div class={`item ${item.included ? "included" : "excluded"}`}>
-              {item.included ? (
-                <div class="icon check">
-                  <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#16a34a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
-                </div>
-              ) : (
-                <div class="icon x">
-                  <svg width="10" height="10" viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="3" x2="3" y2="7" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </div>
-              )}
-              {item.label}
-            </div>
-          ))}
-          <div class="spacer"></div>
-          <a class={`btn ${pkg.btnStyle}`} href={pkg.paypalUrl} target="_blank">{pkg.btnLabel}</a>
+    <!-- BOOK COVERS -->
+    <div class="lx-divider"><div class="lx-divider-line"></div><span class="lx-divider-text">The Books</span><div class="lx-divider-line"></div></div>
+    <div class="books-grid">
+
+      <div class="book-card">
+        <div class="book-covers">
+          <div class="book-cover"><img src="/images/book01-front.jpg" alt="Book 01 Front" /></div>
+          <div class="book-cover"><img src="/images/book01-back.jpg" alt="Book 01 Back" /></div>
         </div>
-      ))}
+        <div class="book-info">
+          <p class="book-num">Book 01</p>
+          <p class="book-title">Breaking Free: System Overview & Blueprint</p>
+          <div class="book-inside">
+            <ul>
+              <li>5-Phase migration system overview</li>
+              <li>Role-based task breakdown</li>
+              <li>Client migration brief template</li>
+              <li>Year 1 / Year 3 cost comparison</li>
+              <li>Pricing positioning strategy</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="book-covers">
+          <div class="book-cover"><img src="/images/book02-front.jpg" alt="Book 02 Front" /></div>
+          <div class="book-cover"><img src="/images/book02-back.jpg" alt="Book 02 Back" /></div>
+        </div>
+        <div class="book-info">
+          <p class="book-num">Book 02</p>
+          <p class="book-title">Technical Migration System — Developer & Agency Edition</p>
+          <div class="book-inside">
+            <ul>
+              <li>Platform dependency vs. ownership</li>
+              <li>Architecture diagrams before & after</li>
+              <li>5-phase migration checklist</li>
+              <li>DNS cutover step by step</li>
+              <li>Top 10 migration mistakes & fixes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-card">
+        <div class="book-covers">
+          <div class="book-cover"><img src="/images/book03-front.jpg" alt="Book 03 Front" /></div>
+          <div class="book-cover"><img src="/images/book03-back.jpg" alt="Book 03 Back" /></div>
+        </div>
+        <div class="book-info">
+          <p class="book-num">Book 03</p>
+          <p class="book-title">Owner Execution System — No-Code Edition</p>
+          <div class="book-inside">
+            <ul>
+              <li>Built for non-technical owners</li>
+              <li>You built your business — own it</li>
+              <li>No developer required</li>
+              <li>Real world migration system</li>
+              <li>Step-by-step owner execution</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
     </div>
-    <p class="guarantee">Secure checkout via PayPal &nbsp;·&nbsp; Instant digital download &nbsp;·&nbsp; No refunds on digital products</p>
+
+    <!-- PRICING -->
+    <div class="lx-divider"><div class="lx-divider-line"></div><span class="lx-divider-text">Choose Your Package</span><div class="lx-divider-line"></div></div>
+    <div class="pricing-grid">
+      <div class="card">
+        <p class="tier-label">Essentials</p>
+        <p class="tier-name">Owner's Execution System</p>
+        <p class="tier-tagline">No Coding Required</p>
+        <p class="tier-desc">Built for business owners who want results without technical overwhelm.</p>
+        <div class="price-row"><span class="price">$97</span><span class="price-note">one-time</span></div>
+        <hr class="card-divider"/>
+        <p class="includes-label">What's included</p>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Book 01 — System Overview & Blueprint</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Book 03 — Owner Execution System</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Cost Justification PDF</div>
+        <div class="item excluded"><div class="x-icon"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7" stroke="#444" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="3" x2="3" y2="7" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></svg></div>Book 02 — Technical Migration System</div>
+        <div class="item excluded"><div class="x-icon"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7" stroke="#444" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="3" x2="3" y2="7" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></svg></div>Client Migration Brief PDF</div>
+        <div class="item excluded"><div class="x-icon"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="3" y1="3" x2="7" y2="7" stroke="#444" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="3" x2="3" y2="7" stroke="#444" stroke-width="1.5" stroke-linecap="round"/></svg></div>Migration Checklist PDF</div>
+        <div class="spacer"></div>
+        <a class="btn outline" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=steve%40oviera.co&item_name=Owners+Execution+System+No+Coding+Required&amount=97.00&currency_code=USD&return=https://cloudflare-workers-autoconfig-breakingfree.sculpepperw.workers.dev/download-essentials&cancel_return=https://cloudflare-workers-autoconfig-breakingfree.sculpepperw.workers.dev/pricing" target="_blank">Get the Essentials — $97</a>
+      </div>
+
+      <div class="card featured">
+        <div class="featured-badge">Most Complete</div>
+        <p class="tier-label">Full Bundle</p>
+        <p class="tier-name">Breaking Free System</p>
+        <p class="tier-tagline">Complete Package</p>
+        <p class="tier-desc">Everything you need to fully execute platform independence from end to end.</p>
+        <div class="price-row"><span class="price">$179</span><span class="price-note">one-time</span></div>
+        <hr class="card-divider"/>
+        <p class="includes-label">What's included</p>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Book 01 — System Overview & Blueprint</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Book 02 — Technical Migration System</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Book 03 — Owner Execution System</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Cost Justification PDF</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Client Migration Brief PDF</div>
+        <div class="item included"><div class="check-icon"><svg width="10" height="10" viewBox="0 0 10 10"><polyline points="2,5 4,7 8,3" stroke="#ffa500" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>Migration Checklist PDF</div>
+        <div class="spacer"></div>
+        <a class="btn solid" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=steve%40oviera.co&item_name=Breaking+Free+System+Complete+Package&amount=179.00&currency_code=USD&return=https://cloudflare-workers-autoconfig-breakingfree.sculpepperw.workers.dev/download-complete&cancel_return=https://cloudflare-workers-autoconfig-breakingfree.sculpepperw.workers.dev/pricing" target="_blank">Get the Complete Package — $179</a>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="lx-divider"><div class="lx-divider-line"></div><span class="lx-divider-text">What People Are Saying</span><div class="lx-divider-line"></div></div>
+    <div class="reviews-grid" id="reviews-container">
+      <p class="reviews-loading">Loading reviews...</p>
+    </div>
+
+    <!-- GUARANTEE -->
+    <p class="guarantee">Secure checkout via PayPal &nbsp;·&nbsp; Instant digital download &nbsp;·&nbsp; Applicable sales tax added at checkout</p>
+    <div class="trust-box">
+      <p class="trust-title">Our Commitment to You</p>
+      <p class="trust-text">These are complete, immediately usable digital resources — not vague theory or recycled advice. Every document was built from real-world experience migrating businesses off platform dependency. Because digital files are delivered instantly and cannot be returned, all sales are final. If you have a question before purchasing, email <a href="mailto:steve@oviera.co">steve@oviera.co</a> — happy to help you decide.</p>
+    </div>
   </div>
+
+  <script define:vars={{ supabaseUrl, supabaseKey }}>
+    async function loadReviews() {
+      try {
+        const res = await fetch(`${supabaseUrl}/rest/v1/breaking_free_reviews?approved=eq.true&order=created_at.asc`, {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        });
+        const reviews = await res.json();
+        const container = document.getElementById('reviews-container');
+        if (!reviews.length) { container.innerHTML = '<p class="reviews-loading">Be the first to review this system.</p>'; return; }
+        container.innerHTML = reviews.map(r => `
+          <div class="review-card">
+            <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            <p class="review-text">"${r.review_text}"</p>
+            <p class="review-author"><strong>${r.reviewer_name}</strong>${r.reviewer_title ? ' — ' + r.reviewer_title : ''}</p>
+          </div>
+        `).join('');
+      } catch(e) {
+        document.getElementById('reviews-container').innerHTML = '';
+      }
+    }
+    loadReviews();
+  </script>
 </body>
 </html>
