@@ -111,7 +111,7 @@ const items = [
     </div>
   </div>
   <script>
-    async function handleSubmit() {
+    window.handleSubmit = async function() {
       const email = document.getElementById("email").value.trim();
       const firstName = document.getElementById("firstName").value.trim();
       const lastName = document.getElementById("lastName").value.trim();
