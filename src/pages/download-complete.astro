@@ -42,7 +42,7 @@ const items = [
     .capture-label { font-size: 13px; color: #aaa; margin-bottom: 1rem; display: block; line-height: 1.6; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .form-input { width: 100%; background: #0a0a0f; border: 1px solid rgba(255,165,0,0.25); border-radius: 8px; padding: 0.75rem 1rem; font-size: 14px; color: #fff; font-family: 'Inter', sans-serif; outline: none; }
-    .form-input::placeholder { color: #444; }
+    .form-input::placeholder { color: #555; }
     .form-input:focus { border-color: rgba(255,165,0,0.5); }
     .lx-btn { display: block; width: 100%; background: linear-gradient(135deg, #c87800, #ffa500, #c87800); color: #000; text-decoration: none; border-radius: 10px; padding: 1.1rem; font-size: 15px; font-weight: 700; text-align: center; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Inter', sans-serif; border: none; cursor: pointer; margin-bottom: 1rem; }
     .lx-btn:hover { opacity: 0.9; }
@@ -67,17 +67,14 @@ const items = [
     <p class="lx-eyebrow">The Platform Independence Blueprint</p>
     <h1 class="lx-title">BREAKING <span>FREE</span></h1>
     <p class="lx-sub">Your complete system is ready. Enter your details below to receive your confirmation email and access your download.</p>
-
     <div class="lx-divider">
       <div class="lx-divider-line"></div>
       <span class="lx-divider-text">Your Download</span>
       <div class="lx-divider-line"></div>
     </div>
-
     <div class="lx-card">
       <p class="lx-product">Breaking Free System — Complete Package</p>
       <p class="lx-detail">6 files &nbsp;&middot;&nbsp; ZIP Archive &nbsp;&middot;&nbsp; Instant Download</p>
-
       <div class="lx-items">
         {items.map((item) => (
           <div class="lx-item">
@@ -88,7 +85,6 @@ const items = [
           </div>
         ))}
       </div>
-
       <div class="capture-form" id="capture-form">
         <span class="capture-label">Enter your name and email to receive your confirmation email and unlock your download.</span>
         <div class="form-row">
@@ -99,7 +95,6 @@ const items = [
         <button class="lx-btn" id="submit-btn" onclick="handleSubmit()">Send Confirmation & Download</button>
         <p class="lx-note">Your email is used to send your receipt and download link. No spam — ever.</p>
       </div>
-
       <p class="success-msg" id="success-msg">Confirmation email sent to your inbox!</p>
       <div id="download-section">
         <a class="lx-btn" href="/downloads/01-Breaking-Free-System-Complete-v1.zip" download>Download Your Complete System</a>
@@ -114,13 +109,11 @@ const items = [
         </div>
       </div>
     </div>
-
     <div class="lx-footer">
       Questions? <a href="mailto:steve@oviera.co">steve@oviera.co</a>
     </div>
   </div>
-
-  <script define:vars={{ payerID }}>
+  <script>
     async function handleSubmit() {
       const email = document.getElementById("email").value.trim();
       const firstName = document.getElementById("firstName").value.trim();
@@ -129,11 +122,26 @@ const items = [
       const btn = document.getElementById("submit-btn");
       btn.disabled = true;
       btn.textContent = "Sending...";
+      const payerID = new URLSearchParams(window.location.search).get("PayerID") || "";
       try {
-        await fetch("/api/purchase-confirm", {
+        await fetch("https://api.useplunk.com/v1/track", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, firstName, lastName, package: "complete", payerID: new URLSearchParams(window.location.search).get("PayerID") || "" })
+          headers: {
+            "Authorization": "Bearer sk_44042e3c6a5c4be62f7be018ad7c449b619a6d5008691441",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            event: "complete-package-purchased",
+            email,
+            data: {
+              first_name: firstName || "Friend",
+              product_name: "Breaking Free System — Complete Package",
+              download_url: window.location.origin + "/download-complete",
+              pdf_password: "FREEDOM",
+              amount: "$179"
+            },
+            subscribed: true
+          })
         });
       } catch(e) {}
       document.getElementById("capture-form").style.display = "none";
