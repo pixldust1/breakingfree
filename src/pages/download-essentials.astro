@@ -1,5 +1,7 @@
 ---
 // src/pages/download-essentials.astro
+export const prerender = false;
+const payerID = Astro.url.searchParams.get("PayerID") || "";
 const items = [
   "Book 01 — Breaking Free: System Overview",
   "Book 03 — Owner Execution System",
@@ -35,16 +37,20 @@ const items = [
     .lx-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #ccc; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-weight: 300; }
     .lx-item:last-child { border-bottom: none; }
     .lx-check { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* EMAIL CAPTURE FORM */
     .capture-form { margin-bottom: 1.5rem; }
     .capture-label { font-size: 13px; color: #aaa; margin-bottom: 1rem; display: block; line-height: 1.6; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .form-input { width: 100%; background: #0a0a0f; border: 1px solid rgba(255,165,0,0.25); border-radius: 8px; padding: 0.75rem 1rem; font-size: 14px; color: #fff; font-family: 'Inter', sans-serif; outline: none; }
-    .form-input::placeholder { color: #555; }
+    .form-input::placeholder { color: #444; }
     .form-input:focus { border-color: rgba(255,165,0,0.5); }
     .lx-btn { display: block; width: 100%; background: linear-gradient(135deg, #c87800, #ffa500, #c87800); color: #000; text-decoration: none; border-radius: 10px; padding: 1.1rem; font-size: 15px; font-weight: 700; text-align: center; letter-spacing: 0.05em; text-transform: uppercase; font-family: 'Inter', sans-serif; border: none; cursor: pointer; margin-bottom: 1rem; }
     .lx-btn:hover { opacity: 0.9; }
     .lx-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .lx-note { font-size: 12px; color: #888; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+
+    /* DOWNLOAD SECTION (hidden until email submitted) */
     #download-section { display: none; }
     .lx-password { background: rgba(255,165,0,0.06); border: 1px solid rgba(255,165,0,0.2); border-radius: 10px; padding: 1rem 1.25rem; text-align: left; margin-bottom: 1rem; }
     .lx-pw-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #ffa500; margin-bottom: 0.5rem; }
@@ -64,14 +70,17 @@ const items = [
     <p class="lx-eyebrow">The Platform Independence Blueprint</p>
     <h1 class="lx-title">BREAKING <span>FREE</span></h1>
     <p class="lx-sub">Your system is ready. Enter your details below to receive your confirmation email and access your download.</p>
+
     <div class="lx-divider">
       <div class="lx-divider-line"></div>
       <span class="lx-divider-text">Your Download</span>
       <div class="lx-divider-line"></div>
     </div>
+
     <div class="lx-card">
       <p class="lx-product">Owner's Execution System</p>
       <p class="lx-detail">No Coding Required &nbsp;&middot;&nbsp; 3 files &nbsp;&middot;&nbsp; ZIP Archive</p>
+
       <div class="lx-items">
         {items.map((item) => (
           <div class="lx-item">
@@ -82,6 +91,8 @@ const items = [
           </div>
         ))}
       </div>
+
+      <!-- EMAIL CAPTURE -->
       <div class="capture-form" id="capture-form">
         <span class="capture-label">Enter your name and email to receive your confirmation email and unlock your download.</span>
         <div class="form-row">
@@ -92,9 +103,11 @@ const items = [
         <button class="lx-btn" id="submit-btn" onclick="handleSubmit()">Send Confirmation & Download</button>
         <p class="lx-note">Your email is used to send your receipt and download link. No spam — ever.</p>
       </div>
+
+      <!-- SUCCESS + DOWNLOAD (shown after email submitted) -->
       <p class="success-msg" id="success-msg">Confirmation email sent to your inbox!</p>
       <div id="download-section">
-        <a class="lx-btn" href="/downloads/02-Owners-Execution-System-v3.zip" download>Download Your System</a>
+        <button class="lx-btn" type="button" onclick="triggerDownload()">Download Your System</button>
         <p class="lx-note">File downloads automatically — save it somewhere safe</p>
         <div class="lx-password">
           <p class="lx-pw-title">PDF Access Password</p>
@@ -106,12 +119,21 @@ const items = [
         </div>
       </div>
     </div>
+
     <div class="lx-footer">
       Questions? <a href="mailto:steve@oviera.co">steve@oviera.co</a>
     </div>
   </div>
-  <script>
-    window.handleSubmit = async function() {
+
+  <script define:vars={{ payerID }}>
+    async function triggerDownload() {
+      const res = await fetch('/api/get-download?package=essentials');
+      const data = await res.json();
+      if (data.url) { window.location.href = data.url; }
+      else { alert('Download failed. Email steve@oviera.co'); }
+    }
+
+    async function handleSubmit() {
       const email = document.getElementById("email").value.trim();
       const firstName = document.getElementById("firstName").value.trim();
       const lastName = document.getElementById("lastName").value.trim();
@@ -119,7 +141,6 @@ const items = [
       const btn = document.getElementById("submit-btn");
       btn.disabled = true;
       btn.textContent = "Sending...";
-      const payerID = new URLSearchParams(window.location.search).get("PayerID") || "";
       try {
         await fetch("/api/purchase-confirm", {
           method: "POST",
