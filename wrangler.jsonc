@@ -1,0 +1,15 @@
+{
+  "compatibility_date": "2026-04-02",
+  "compatibility_flags": ["global_fetch_strictly_public"],
+  "name": "breakingfree",
+  "assets": {
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "PLUNK_API_KEY": "sk_44042e3c6a5c4be62f7be018ad7c449b619a6d5008691441",
+   
+  }
+}
